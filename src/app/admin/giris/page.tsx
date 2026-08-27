@@ -11,17 +11,47 @@ export default function Giris() {
   const [yukleniyor, setYukleniyor] = useState(false);
   const router = useRouter();
 
+  /** Supabase'in teknik hatasını anlaşılır Türkçeye çevirir. */
+  function hataMetni(mesaj: string): string {
+    const m = mesaj.toLowerCase();
+    if (m.includes("invalid login")) return "E-posta veya şifre hatalı.";
+    if (m.includes("email not confirmed"))
+      return "Bu kullanıcı henüz doğrulanmamış. Supabase > Authentication > Users bölümünden kullanıcıyı 'Auto Confirm User' işaretli olarak yeniden oluşturun.";
+    if (m.includes("invalid api key") || m.includes("api key"))
+      return "Supabase anahtarı geçersiz. Vercel'deki NEXT_PUBLIC_SUPABASE_ANON_KEY değerini kontrol edin.";
+    if (m.includes("failed to fetch") || m.includes("networkerror") || m.includes("load failed"))
+      return "Supabase'e bağlanılamadı. NEXT_PUBLIC_SUPABASE_URL değeri eksik veya hatalı olabilir.";
+    if (m.includes("rate limit") || m.includes("too many"))
+      return "Çok fazla deneme yapıldı. Birkaç dakika bekleyip tekrar deneyin.";
+    return `Giriş yapılamadı: ${mesaj}`;
+  }
+
   async function girisYap(e: React.FormEvent) {
     e.preventDefault();
     setYukleniyor(true); setHata("");
-    const { error } = await supabaseBrowser().auth.signInWithPassword({ email: eposta, password: sifre });
-    if (error) {
-      setHata("E-posta veya şifre hatalı.");
+
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      setHata("Supabase bağlantı bilgileri tanımlı değil. Vercel > Settings > Environment Variables bölümünü kontrol edip yeniden yayınlayın (Redeploy).");
       setYukleniyor(false);
       return;
     }
-    router.push("/admin");
-    router.refresh();
+
+    try {
+      const { error } = await supabaseBrowser().auth.signInWithPassword({
+        email: eposta.trim(),
+        password: sifre,
+      });
+      if (error) {
+        setHata(hataMetni(error.message));
+        setYukleniyor(false);
+        return;
+      }
+      router.push("/admin");
+      router.refresh();
+    } catch (err) {
+      setHata(hataMetni(err instanceof Error ? err.message : String(err)));
+      setYukleniyor(false);
+    }
   }
 
   return (
