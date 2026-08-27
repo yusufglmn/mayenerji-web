@@ -8,9 +8,11 @@ export default function IletisimFormu() {
 
   async function gonder(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    // Form elemanını await ÖNCESİNDE yakala: React, olay işleyicisi bittikten sonra
+    // e.currentTarget'ı null yapar; await sonrası ona dokunmak hataya yol açar.
+    const form = e.currentTarget;
     setDurum("gonderiliyor");
-    const fd = new FormData(e.currentTarget);
-    const veri = Object.fromEntries(fd.entries());
+    const veri = Object.fromEntries(new FormData(form).entries());
 
     try {
       const r = await fetch("/api/iletisim", {
@@ -18,10 +20,10 @@ export default function IletisimFormu() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(veri),
       });
-      const j = await r.json();
+      const j = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(j.hata || "Mesaj gönderilemedi.");
+      form.reset();
       setDurum("tamam");
-      e.currentTarget.reset();
     } catch (err) {
       setHata(err instanceof Error ? err.message : "Bir hata oluştu.");
       setDurum("hata");
