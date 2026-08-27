@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --font-sans: "Inter", "Segoe UI", system-ui, sans-serif; }
+
+html { scroll-behavior: smooth; }
+body { @apply bg-white text-slate-800 antialiased; }
+
+@layer components {
+  .kapsayici { @apply mx-auto w-full max-w-site px-5 sm:px-6 lg:px-8; }
+
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2; }
+  .btn-birincil { @apply btn bg-yesil text-white hover:bg-yesil-700 focus:ring-yesil shadow-sm hover:shadow-md; }
+  .btn-ikincil { @apply btn bg-lacivert text-white hover:bg-lacivert-900 focus:ring-lacivert shadow-sm hover:shadow-md; }
+  .btn-gunes { @apply btn bg-gunes text-lacivert-900 hover:bg-gunes-600 focus:ring-gunes shadow-sm; }
+  .btn-cerceve { @apply btn border-2 border-lacivert text-lacivert hover:bg-lacivert hover:text-white focus:ring-lacivert; }
+
+  .baslik-bolum { @apply text-3xl font-bold tracking-tight text-lacivert sm:text-4xl; }
+  .alt-baslik { @apply mt-4 text-base leading-relaxed text-slate-600 sm:text-lg; }
+  .etiket { @apply inline-flex items-center gap-2 rounded-full bg-yesil-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-yesil-700; }
+
+  .kart { @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-200; }
+  .kart-hover { @apply kart hover:-translate-y-1 hover:border-yesil-400 hover:shadow-lg; }
+
+  .girdi { @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-yesil focus:ring-2 focus:ring-yesil-100; }
+  .etiket-form { @apply mb-2 block text-sm font-semibold text-lacivert; }
+}
+
+/* Yönetim paneli tablo stili */
+.tablo { @apply w-full border-collapse text-sm; }
+.tablo th { @apply border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-left text-xs font-bold uppercase tracking-wide text-slate-500; }
+.tablo td { @apply border-b border-slate-100 px-3 py-2.5 align-middle; }
