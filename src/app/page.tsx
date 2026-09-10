@@ -40,7 +40,7 @@ export default async function AnaSayfa() {
 
             <dl className="mt-12 grid grid-cols-3 gap-6 border-t border-white/15 pt-8">
               {[
-                ["25+ yıl", "Panel garantisi"],
+                ["10+ yıl", "Panel garantisi"],
                 ["3–6 yıl", "Ortalama amortisman"],
                 ["%100", "Anahtar teslim"],
               ].map(([b, a]) => (
